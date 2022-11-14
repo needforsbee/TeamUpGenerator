@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        
+        <style>
+            * {
+                background-color: black;
+                color: wheat;
+                font-weight: bold;
+            }
+
+            table {
+                border: 1px solid wheat;
+                border-collapse: collapse;
+                width: 100%;
+            }
+
+            td, tr {
+                padding: 1% 0 1% 0;
+                border: 1px solid black;
+            }
+
+            .center {
+                margin-left: auto;
+                margin-right: auto;
+            }
+        </style>
+    </head>
+
+    <body>
+
+<h1 style="text-align:center;">分隊</h1>
+
+<table class="center" id="myTable">
+  <tr>
+    <th style="font-size: 3vw;" colspan="2">14人名單</th>
+  </tr>
+</table>
+
+<div style="text-align: center;">
+    <button style="margin: 1% 0; padding: 1% 1%; font-size: 2vw;" onclick="myFunction()">猜包揼</button>
+</div>
+
+<p id="team1" style="font-weight: bold; font-size: 2vw; color:#ff8a00;"></p>
+<p id="team2" style="font-weight: bold; font-size: 2vw; color:#8383fb;"></p>
+
+<script>
+function myFunction() {
+
+    let team1 = [];
+    for (var i = 0; i < 14; i++)
+        team1.push(i);
+
+    let team2 = [];
+
+    for (var i = 0; i < 7; i++)
+    {
+        let index = Math.floor(Math.random() * (team1.length - 1));
+        team2.push(team1[index]);
+        team1.splice(index, 1);
+    }
+
+    var team1Member = "";
+    var team2Member = "";
+    for (var i = 0; i < 7; i++)
+    {
+        var selectElement = document.getElementById('sel_' + team1[i]);
+        var inputElement = document.getElementById('in_' + team1[i]);
+
+        if (i > 0)
+            team1Member += ", ";
+
+        team1Member += selectElement.value + (selectElement.value == "新人" ? inputElement.value : "");
+
+        selectElement = document.getElementById('sel_' + team2[i]);
+        inputElement = document.getElementById('in_' + team2[i]);
+
+        if (i > 0)
+            team2Member += ", ";
+
+        team2Member += selectElement.value + (selectElement.value == "新人" ? inputElement.value : "");
+    }
+
+    document.getElementById("team1").innerHTML = "包: " + team1Member;
+    document.getElementById("team2").innerHTML = "揼: " + team2Member;
+}
+
+function SelectedUpdated(selectObject)
+{
+    var index = selectObject.id.split('_')[1];
+    var inputElement = document.getElementById('in_' + index);
+
+    if (selectObject.value == "新人")
+    {
+        inputElement.removeAttribute("readonly");
+    }
+    else
+    {
+        inputElement.setAttribute("readonly", "readonly");
+    }
+}
+
+var tbodyRef = document.getElementById('myTable').getElementsByTagName('tbody')[0];
+var cellCounter = 0;
+
+const names = ["Hanford",
+               "Eric",
+               "Hin",
+               "Steven",
+               "Ronald",
+               "Loren",
+               "Will",
+               "靖",
+               "希",
+               "Rooney",
+               "Derek",
+               "杜",
+               "翔",
+               "Jeff",
+               "Matthew",
+               "舜",
+               "Deco",
+               "Andrew",
+               "堅",
+               "Nelson ",
+               "Terry",
+               "Janson",
+               "Johnny",
+               "Noel",
+               "Darren",
+               "新人", ];
+
+for (var row = 0; row < 7; row++)
+{
+    // Insert a row at the end of table
+    var newRow = tbodyRef.insertRow();
+    
+    for (var cell = 0; cell < 2; cell++)
+    {
+        // Insert a cell at the end of the row
+        var newCell = newRow.insertCell();
+        newCell.style.textAlign = "center";
+        newCell.id = "cell" + cellCounter;
+
+        var lable = document.createElement('lable');
+        lable.style.fontSize = "2vw";
+        if (cellCounter <= 8)
+            lable.innerHTML = "0" + (cellCounter + 1) + ". ";
+        else
+            lable.innerHTML = cellCounter + ". ";
+        newCell.appendChild(lable);
+
+        var selectElement = document.createElement('select');
+        selectElement.style.fontSize = "2vw";
+        selectElement.id = "sel_" + cellCounter;
+        selectElement.setAttribute("onchange", "SelectedUpdated(this)");
+
+        for (var i = 0; i < names.length; i++){
+            var opt = document.createElement('option');
+            opt.value = names[i];
+            opt.innerHTML = names[i];
+            selectElement.appendChild(opt);
+        }
+        selectElement.selectedIndex = cellCounter;
+        newCell.appendChild(selectElement);
+
+        var inputElement = document.createElement('input');
+        inputElement.style.fontSize = "2vw";
+        inputElement.style.width = "50%";
+        inputElement.style.margin = "0 0 0 1%";
+        inputElement.style.backgroundColor = "#e5feff";
+        inputElement.style.color = "#1700bb";
+        inputElement.id = "in_" + cellCounter;
+        inputElement.setAttribute("type", "text");
+        inputElement.setAttribute("readonly", "");
+        newCell.appendChild(inputElement);
+
+        cellCounter++;
+    }
+}
+
+</script>
+
+</body>
+</html>
