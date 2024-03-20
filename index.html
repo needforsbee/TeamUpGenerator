@@ -232,6 +232,8 @@ for (var row = 0; row < 7; row++)
         var checkElement = document.createElement('input');
         checkElement.type = "checkbox";
         checkElement.id = "chk_" + cellCounter;
+        checkElement.style.width = "3vw";
+        checkElement.style.height = "2vw";
         checkElement.setAttribute("onchange", "CheckedUpdated(this)");
         newCell.appendChild(checkElement);
 
