@@ -53,17 +53,45 @@
 <script>
 function myFunction() {
 
+    var teamLeader = (checkedCounter == 2);
+
     let team1 = [];
     for (var i = 0; i < 14; i++)
+    {
+        var isBreak = false;
+
+        if (teamLeader)
+        {
+            for (var x = 0; x < 2; x++)
+            {
+                if (checkedIndex[x] == i)
+                 {
+                    isBreak = true;
+                    break;
+                 }
+            }
+        }
+
+        if (isBreak)
+            continue;
+
         team1.push(i);
+    }
 
     let team2 = [];
+    var totalMember = team1.length;
 
-    for (var i = 0; i < 7; i++)
+    for (var i = 0; i < totalMember / 2; i++)
     {
         let index = Math.floor(Math.random() * (team1.length - 1));
         team2.push(team1[index]);
         team1.splice(index, 1);
+    }
+
+    if (teamLeader)
+    {
+        team1.unshift(checkedIndex[0]);
+        team2.unshift(checkedIndex[1]);
     }
 
     var team1Member = "";
@@ -106,8 +134,44 @@ function SelectedUpdated(selectObject)
     }
 }
 
+function CheckedUpdated(checkObject)
+{
+    var index = checkObject.id.split('_')[1];
+
+    if (checkObject.checked)
+    {
+        checkedIndex.unshift(index);
+        checkedCounter++;
+    }
+    else
+    {
+        checkedIndex.splice(checkedIndex.indexOf(index), 1);
+        checkedCounter--;
+    }
+
+    if (checkedCounter >= 2)
+    {
+        for (var i = 0; i < 14; i++)
+        {
+            var inputElement = document.getElementById('chk_' + i);
+            if (!inputElement.checked)
+                inputElement.disabled  = true;
+        }
+    }
+    else
+    {
+        for (var i = 0; i < 14; i++)
+        {
+            var inputElement = document.getElementById('chk_' + i);
+            inputElement.disabled  = false;
+        }
+    }
+}
+
 var tbodyRef = document.getElementById('myTable').getElementsByTagName('tbody')[0];
 var cellCounter = 0;
+var checkedCounter = 0;
+let checkedIndex = [];
 
 const names = ["Hanford",
                "Eric",
@@ -141,6 +205,8 @@ const names = ["Hanford",
                "Gobi",
                "畢",
                "行",
+               "lan",
+               "鵬",
                "新人", ];
 
 for (var row = 0; row < 7; row++)
@@ -162,6 +228,12 @@ for (var row = 0; row < 7; row++)
         else
             lable.innerHTML = (cellCounter + 1) + ". ";
         newCell.appendChild(lable);
+
+        var checkElement = document.createElement('input');
+        checkElement.type = "checkbox";
+        checkElement.id = "chk_" + cellCounter;
+        checkElement.setAttribute("onchange", "CheckedUpdated(this)");
+        newCell.appendChild(checkElement);
 
         var selectElement = document.createElement('select');
         selectElement.style.fontSize = "2vw";
